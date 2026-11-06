@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>マネージャー（検証版）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1e4034">
+  <!-- iOSのホーム画面追加用 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="マネージャー">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>フェーズ0 技術検証</h1>
+  <!-- 公式素材は使わない（CLAUDE.md 禁止事項）。立ち絵はプレースホルダー -->
+  <div class="placeholder">立ち絵<br>プレースホルダー</div>
+
+  <section class="card">
+    <h2>起動状態</h2>
+    <dl>
+      <dt>表示モード</dt><dd id="display-mode">-</dd>
+      <dt>開いた経路</dt><dd id="source">-</dd>
+      <dt>Service Worker</dt><dd id="sw-status">-</dd>
+      <dt>開いた時刻</dt><dd id="opened-at">-</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <h2>音声再生テスト</h2>
+    <!-- iOSは利用者の操作なしに音を鳴らせないため、ボタン1回の操作で再生する -->
+    <button id="play-voice" type="button">声を再生（テスト音）</button>
+    <dl style="margin-top:8px">
+      <dt>再生状態</dt><dd id="audio-status">未再生</dd>
+    </dl>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
