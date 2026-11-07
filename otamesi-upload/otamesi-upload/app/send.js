@@ -65,3 +65,42 @@ $('send').addEventListener('click', async () => {
     setStatus('送信失敗: ' + e.message, 'ng');
   }
 });
+
+// ---- Web Push（送信サーバー経由） ----
+Settings.bind('wp-worker-url', 'workerUrl');
+Settings.bind('wp-token', 'appToken');
+
+function setWp(text, cls) {
+  $('wp-status').textContent = text;
+  $('wp-status').className = cls || '';
+}
+
+function buildWebPushRequest(minutes, now = new Date()) {
+  const body = { title: 'キィニチくん（検証）', body: '通知テストだ。タップして開いてみろ。', url: appUrl + '?source=webpush' };
+  if (minutes > 0) {
+    const at = new Date(now.getTime() + minutes * 60_000);
+    body.delaySeconds = minutes * 60;
+    body.body += `（予定 ${hhmmss(at)}）`;
+  }
+  return body;
+}
+
+$('wp-send').addEventListener('click', async () => {
+  setWp('送信中…', '');
+  try {
+    const r = await Settings.api('/api/send', { method: 'POST', body: buildWebPushRequest(Number($('delay').value)) });
+    const note = r.queueStore === 'kv' ? '。保存先がKVのため最大1分ほど遅れることがあります（D1の設定を推奨）' : '';
+    setWp(r.scheduled ? `予約しました（配信予定 ${hhmmss(new Date(r.at))}${note}）` : '送信しました', 'ok');
+  } catch (e) {
+    setWp('失敗: ' + e.message, 'ng');
+  }
+});
+
+$('wp-status-btn').addEventListener('click', async () => {
+  try {
+    const r = await Settings.api('/api/status');
+    setWp(`購読：${r.subscribed ? 'あり' : 'なし'}／予約：${r.queue.length}件／予約の保存先：${r.queueStore === 'd1' ? 'D1' : 'KV'}`, r.subscribed ? 'ok' : 'ng');
+  } catch (e) {
+    setWp('失敗: ' + e.message, 'ng');
+  }
+});
